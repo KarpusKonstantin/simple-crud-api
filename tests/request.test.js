@@ -112,8 +112,6 @@ describe('GET deleted record', () => {
   it('should get status 404 - record not found', async () =>  {
     const response = await request(CURRENT_HOST).get(`/person/${id}`);
 
-    console.log('GET >>', response.text);
-
     expect(response.status).toBe(404);
   })
 });
