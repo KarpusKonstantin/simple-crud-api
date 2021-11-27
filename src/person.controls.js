@@ -24,11 +24,25 @@ const updatePerson = (id, personData) => {
     return {code: 404, message: `Person id ${id} not found in DB`};
 
   } else {
+    if (!personData.name || personData.name === '') {
+      return {code: 400, message: 'Field "Name" is required. Please fill this field and try again'}
+    }
+
+    if (!personData.age || personData.age === '') {
+      return {code: 400, message: 'Field "Age" is required. Please fill this field and try again'}
+    }
+
+    if (!personData.hobbies || personData.hobbies.length === 0) {
+      return {code: 400, message: 'Field "Hobbies" is required. Please fill this field and try again'}
+    }
+
     const index = personsDB.indexOf(result[0]);
 
-    // personsDB[index].name
+    personsDB[index].name = personData.name;
+    personsDB[index].age = personData.age;
+    personsDB[index].hobbies = personData.hobbies;
 
-    return {code: 200, message: result};
+    return {code: 200, message: personsDB[index]};
   }
 }
 

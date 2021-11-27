@@ -53,7 +53,14 @@ const server = http.createServer((req, res) => {
     }
 
     if (req.method === 'PUT') {
-      result = updatePerson(urlObject.personId);
+      req.on('data', data => {
+        const jsonData = JSON.parse(data);
+        result = updatePerson(urlObject.personId, jsonData);
+
+      }).on('end', () => {
+        res.statusCode = result.code;
+        res.end(JSON.stringify(result.message));
+      });
     }
 
     if (req.method === 'DELETE') {
@@ -70,25 +77,6 @@ const server = http.createServer((req, res) => {
     res.end(JSON.stringify(urlObject.message));
   }
 
-
-
-
-  // if(urlparse.pathname == '/projects' && req.method == 'POST')
-  // {
-  //   //TODO: POST logic
-  // }
-  // if(urlparse.pathname == '/projects/tasks' && req.method == 'POST')
-  // {
-  //   //TODO: POST logic
-  // }
-  // if(urlparse.pathname == '/projects' && req.method == 'PUT')
-  // {
-  //   //TODO: PUT logic
-  // }
-  // if(urlparse.pathname == '/projects' && req.method == 'DELETE')
-  // {
-  //   //TODO: DELETE logic
-  // }
 });
 
 server.listen(port, hostname, () => {
