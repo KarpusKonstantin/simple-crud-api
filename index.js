@@ -2,9 +2,9 @@ const http = require('http');
 const dotenv = require('dotenv');
 const path = require('path');
 const url = require('url');
-const personsDB = require("./db/db");
+const { myUrlParser } = require("./src/utils");
 
-const {getAllPersons, postPerson} = require("./src/person.controls");
+const {getAllPersons, getPersonById, postPerson} = require("./src/person.controls");
 
 dotenv.config({
   path: path.join(__dirname, '.env')
@@ -16,10 +16,12 @@ const port = process.env.PORT;
 const server = http.createServer((req, res) => {
 
   const urlParse = url.parse(req.url, true);
-  const urlParamsArray = urlParse.pathname.split('/').filter(item => item !== '');
 
-  if ((urlParamsArray.length === 1) && (urlParamsArray[0] === 'person')) {
-    if (urlParse.pathname === '/person' && req.method === 'GET') {
+  const urlObject = myUrlParser(urlParse);
+  console.log('URL OBJECT >>', urlObject);
+
+  if (urlObject.valid && (urlObject.personId === '')) {
+    if (req.method === 'GET') {
       try {
         const persons = getAllPersons();
 
@@ -32,7 +34,7 @@ const server = http.createServer((req, res) => {
       }
     }
 
-    if (urlParse.pathname === '/person' && req.method === 'POST') {
+    if (req.method === 'POST') {
       req.on('data', data => {
         const jsonData = JSON.parse(data);
         const result = postPerson(jsonData);
@@ -41,7 +43,30 @@ const server = http.createServer((req, res) => {
         res.end(JSON.stringify(result.message));
       });
     }
+  } else if (urlObject.valid && (urlObject.personId !== ''))  {
+    if (req.method === 'GET') {
+      const result = getPersonById(urlObject.personId);
+
+      res.statusCode = result.code;
+      res.end(JSON.stringify(result.message));
+
+    }
+
+    if (req.method === 'PUT') {
+      const result = getPersonById(urlObject.personId);
+
+      res.statusCode = result.code;
+      res.end(JSON.stringify(result.message));
+
+    }
+
+  } else {
+    res.statusCode = urlObject.code;
+    res.end(JSON.stringify(urlObject.message));
   }
+
+
+
 
   // if(urlparse.pathname == '/projects' && req.method == 'POST')
   // {

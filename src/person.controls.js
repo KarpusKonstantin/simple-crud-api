@@ -5,6 +5,18 @@ const getAllPersons = () => {
   return personsDB;
 }
 
+const getPersonById = (id) => {
+  const result =  personsDB.filter(item => item.id === id);
+
+  if (result.length === 0) {
+    return {code: 404, message: `Person id ${id} not found in DB`};
+
+  } else {
+    return {code: 200, message: result};
+
+  }
+}
+
 const postPerson = (personData) => {
   if (!personData.name || personData.name === '') {
     return {code: 400, message: 'Field "Name" is required. Please fill this field and try again'}
@@ -29,4 +41,4 @@ const postPerson = (personData) => {
   }
 }
 
-module.exports = { getAllPersons, postPerson }
+module.exports = { getAllPersons, getPersonById, postPerson }
