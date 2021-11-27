@@ -117,3 +117,18 @@ describe('GET deleted record', () => {
     expect(response.status).toBe(404);
   })
 });
+
+describe('URL valid', () => {
+  it('should get status 404 if url not correct', async () =>  {
+    const response = await request(CURRENT_HOST).get(`/person2`);
+
+    expect(response.status).toBe(404);
+  })
+
+  it('should get status 400 if ID not uuid', async () =>  {
+    const response = await request(CURRENT_HOST).get(`/person/${id}a`);
+
+    expect(response.status).toBe(400);
+  })
+
+});
