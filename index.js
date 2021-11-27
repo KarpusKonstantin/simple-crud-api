@@ -2,6 +2,8 @@ const http = require('http');
 const dotenv = require('dotenv');
 const path = require('path');
 const url = require('url');
+const {updatePerson} = require("./src/person.controls");
+const {deletePerson} = require("./src/person.controls");
 const { myUrlParser } = require("./src/utils");
 
 const {getAllPersons, getPersonById, postPerson} = require("./src/person.controls");
@@ -14,6 +16,7 @@ const hostname = process.env.HOSTNAME;
 const port = process.env.PORT;
 
 const server = http.createServer((req, res) => {
+  let result = {};
 
   const urlParse = url.parse(req.url, true);
 
@@ -37,27 +40,29 @@ const server = http.createServer((req, res) => {
     if (req.method === 'POST') {
       req.on('data', data => {
         const jsonData = JSON.parse(data);
-        const result = postPerson(jsonData);
+        result = postPerson(jsonData);
 
         res.statusCode = result.code;
         res.end(JSON.stringify(result.message));
       });
     }
+
   } else if (urlObject.valid && (urlObject.personId !== ''))  {
     if (req.method === 'GET') {
-      const result = getPersonById(urlObject.personId);
-
-      res.statusCode = result.code;
-      res.end(JSON.stringify(result.message));
-
+      result = getPersonById(urlObject.personId);
     }
 
     if (req.method === 'PUT') {
-      const result = getPersonById(urlObject.personId);
+      result = updatePerson(urlObject.personId);
+    }
 
+    if (req.method === 'DELETE') {
+      result = deletePerson(urlObject.personId);
+    }
+
+    if (result.code) {
       res.statusCode = result.code;
       res.end(JSON.stringify(result.message));
-
     }
 
   } else {

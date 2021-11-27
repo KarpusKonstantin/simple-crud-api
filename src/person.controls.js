@@ -17,6 +17,37 @@ const getPersonById = (id) => {
   }
 }
 
+const updatePerson = (id, personData) => {
+  const result =  personsDB.filter(item => item.id === id);
+
+  if (result.length === 0) {
+    return {code: 404, message: `Person id ${id} not found in DB`};
+
+  } else {
+    const index = personsDB.indexOf(result[0]);
+
+    // personsDB[index].name
+
+    return {code: 200, message: result};
+  }
+}
+
+const deletePerson = (id) => {
+  const result =  personsDB.filter(item => item.id === id);
+
+  if (result.length === 0) {
+    return {code: 404, message: `Person id ${id} not found in DB`};
+
+  } else {
+    const index = personsDB.indexOf(result[0]);
+
+    if (index > -1) {
+      personsDB.slice(index, 1);
+      return {code: 204, message: `Person id ${id} was deleted successfully`};
+    }
+  }
+}
+
 const postPerson = (personData) => {
   if (!personData.name || personData.name === '') {
     return {code: 400, message: 'Field "Name" is required. Please fill this field and try again'}
@@ -41,4 +72,4 @@ const postPerson = (personData) => {
   }
 }
 
-module.exports = { getAllPersons, getPersonById, postPerson }
+module.exports = { getAllPersons, getPersonById, postPerson, deletePerson, updatePerson }
