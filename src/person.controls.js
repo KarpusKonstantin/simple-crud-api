@@ -56,7 +56,8 @@ const deletePerson = (id) => {
     const index = personsDB.indexOf(result[0]);
 
     if (index > -1) {
-      personsDB.slice(index, 1);
+      personsDB.splice(index, 1);
+
       return {code: 204, message: `Person id ${id} was deleted successfully`};
     }
   }
