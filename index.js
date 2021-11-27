@@ -21,7 +21,6 @@ const server = http.createServer((req, res) => {
   const urlParse = url.parse(req.url, true);
 
   const urlObject = myUrlParser(urlParse);
-  console.log('URL OBJECT >>', urlObject);
 
   if (urlObject.valid && (urlObject.personId === '')) {
     if (req.method === 'GET') {
