@@ -130,5 +130,30 @@ describe('URL valid', () => {
 
     expect(response.status).toBe(400);
   })
+});
 
+describe('Valid send field in request', () => {
+  it('should get status 400 if NAME does not exist ', async () =>  {
+    const response = await request(CURRENT_HOST)
+      .post('/person')
+      .send({age: 20, hobbies: ["1", "2"]});
+
+    expect(response.status).toBe(400);
+  })
+
+  it('should get status 400 if AGE does not exist ', async () =>  {
+    const response = await request(CURRENT_HOST)
+      .post('/person')
+      .send({name: 'A', hobbies: ["1", "2"]});
+
+    expect(response.status).toBe(400);
+  })
+
+  it('should get status 400 if HOBBIES does not exist ', async () =>  {
+    const response = await request(CURRENT_HOST)
+      .post('/person')
+      .send({name: 'A', age: 30});
+
+    expect(response.status).toBe(400);
+  })
 });
